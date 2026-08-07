@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Movies.Api.Mapping;
+using Movies.Application.Models;
 using Movies.Application.Repositories;
 using Movies.Contracts.Requests;
 
@@ -18,6 +20,11 @@ public class MovieController : ControllerBase
     [HttpPost("movies")]
     public async Task<IActionResult> Create([FromBody] CreateMovieRequest request)
     {
-        return Ok(request);
+        var movie = request.MapToMovie();
+
+        var result = await _movieRepository.CreateAsync(movie);
+
+        //return Ok(movie);
+        return Created($"/api/movies/{movie.Id}", movie);
     }
 }
